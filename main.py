@@ -4,7 +4,7 @@ from aiogram import Dispatcher, Bot, F, types
 from aiogram.filters import Command
 
 dp = Dispatcher()
-bot = Bot(token="6453026810:AAG871LBfaGMwCS-_Iz0yk6fAjxOckG8MdA")
+bot = Bot(token="")
 user_balance = 2000
 
 
