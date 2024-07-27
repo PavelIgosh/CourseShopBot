@@ -5,7 +5,7 @@ from aiogram.filters import Command
 
 dp = Dispatcher()
 bot = Bot(token="6453026810:AAG871LBfaGMwCS-_Iz0yk6fAjxOckG8MdA")
-user_balance = 10_000
+user_balance = 2000
 
 
 @dp.message(Command("start"))
@@ -52,7 +52,8 @@ async def python(callback: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
     await callback.message.edit_text("Этот курс рассказывает об основных типах данных,\n"
                                      "конструкциях и принципах структурного программирования,"
-                                     "\nиспользуя версию языка Python.", reply_markup=keyboard)
+                                     "\nиспользуя версию языка Python.\n"
+                                     "Цена курса: 1000", reply_markup=keyboard)
 
 
 @dp.callback_query(F.data == "aiogram")
@@ -65,7 +66,8 @@ async def aiogram(callback: types.CallbackQuery):
     await callback.message.edit_text(
         "aiogram — это современный и полностью асинхронный фреймворк для Telegram Bot API,\n"
         "написанного на Python с использованием asyncio и aiohttp. \n"
-        "Это поможет вам сделать ваших ботов быстрее и проще.", reply_markup=keyboard)
+        "Это поможет вам сделать ваших ботов быстрее и проще.\n"
+        "Цена курса: 1000", reply_markup=keyboard)
 
 
 @dp.callback_query(F.data == "telebot")
@@ -76,7 +78,8 @@ async def aiogram(callback: types.CallbackQuery):
     ]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
     await callback.message.edit_text(
-        "Курс по telebot", reply_markup=keyboard)
+        "Курс по telebot\n"
+        "Цена курса: 1000", reply_markup=keyboard)
 
 
 @dp.callback_query(F.data == "django")
@@ -87,7 +90,71 @@ async def django(callback: types.CallbackQuery):
     ]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
     await callback.message.edit_text(
-        "Курс по django", reply_markup=keyboard)
+        "Курс по django\n"
+        "Цена курса: 1000", reply_markup=keyboard)
+
+
+@dp.callback_query(F.data == "buy_telebot")
+@dp.callback_query(F.data == "buy_django")
+@dp.callback_query(F.data == "buy_aiogram")
+@dp.callback_query(F.data == "buy_python")
+async def buys(callback: types.CallbackQuery):
+    global user_balance
+    kb = [
+        [types.InlineKeyboardButton(text="Меню", callback_data="start")]
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
+    if user_balance >= 1000:
+        user_balance -= 1000
+        await callback.message.edit_text("Курс был успешно куплен! Доступ будет скоро открыт!", reply_markup=keyboard)
+    else:
+        await callback.message.edit_text("Недостаточно средств на балансе!", reply_markup=keyboard)
+
+
+@dp.callback_query(F.data == "user")
+async def user(callback: types.CallbackQuery):
+    kb = [
+        [types.InlineKeyboardButton(text="Пополнить баланс", callback_data="top_up_balance")],
+        [types.InlineKeyboardButton(text="Меню", callback_data="start")]
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
+    await callback.message.edit_text(f"Привет, {callback.from_user.first_name}!\n"
+                                     f"Твой id - {callback.from_user.id}\n"
+                                     f"Денег на балансе: {user_balance}", reply_markup=keyboard)
+
+
+@dp.callback_query(F.data == "top_up_balance")
+async def top_up_balance(callback: types.CallbackQuery):
+    kb = [
+        [types.InlineKeyboardButton(text="500р", callback_data="top_up_500"),
+         types.InlineKeyboardButton(text="1000р", callback_data="top_up_1000")]
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
+    await callback.message.edit_text("Выберите сумму пополнения баланса:", reply_markup=keyboard)
+
+
+@dp.callback_query(F.data == "top_up_500")
+async def top_up_500(callback: types.CallbackQuery):
+    global user_balance
+    kb = [
+        [types.InlineKeyboardButton(text="Меню", callback_data="start")]
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
+    await callback.message.edit_text("Баланс успешно пополнен на 500!\n"
+                                     "Проверьте счет в разделе 'Профиль'.", reply_markup=keyboard)
+    user_balance += 500
+
+
+@dp.callback_query(F.data == "top_up_1000")
+async def top_up_1000(callback: types.CallbackQuery):
+    global user_balance
+    kb = [
+        [types.InlineKeyboardButton(text="Меню", callback_data="start")]
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
+    await callback.message.edit_text("Баланс успешно пополнен на 1000!\n"
+                                     "Проверьте счет в разделе 'Профиль'.", reply_markup=keyboard)
+    user_balance += 1000
 
 
 async def main():
