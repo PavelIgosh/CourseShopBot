@@ -4,7 +4,7 @@ from aiogram import Dispatcher, Bot, F, types
 from aiogram.filters import Command
 
 dp = Dispatcher()
-bot = Bot(token="6453026810:AAG871LBfaGMwCS-_Iz0yk6fAjxOckG8MdA")
+bot = Bot(token="")
 user_balance = 2000
 
 
@@ -111,6 +111,9 @@ async def buys(callback: types.CallbackQuery):
         await callback.message.edit_text("Недостаточно средств на балансе!", reply_markup=keyboard)
 
 
+6453026810
+
+
 @dp.callback_query(F.data == "user")
 async def user(callback: types.CallbackQuery):
     kb = [
@@ -155,6 +158,27 @@ async def top_up_1000(callback: types.CallbackQuery):
     await callback.message.edit_text("Баланс успешно пополнен на 1000!\n"
                                      "Проверьте счет в разделе 'Профиль'.", reply_markup=keyboard)
     user_balance += 1000
+
+
+@dp.callback_query(F.data == "support")
+async def support(callback: types.CallbackQuery):
+    kb = [
+        [types.InlineKeyboardButton(text="Разработчик", url="https://t.me/iAteYourSandwich")],
+        [types.InlineKeyboardButton(text="Меню", callback_data="start")]
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
+    await callback.message.edit_text("Поддержка и помощь:", reply_markup=keyboard)
+
+
+@dp.callback_query(F.data == "about_us")
+async def about_us(callback: types.CallbackQuery):
+    kb = [
+        [types.InlineKeyboardButton(text="Меню", callback_data="start")]
+    ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=kb)
+    await callback.message.answer("Наша компания продает курсы по программированию.\n"
+                                  "У нас есть курсы по ЯП и фреймворкам.\n"
+                                  "Очень дешевые цены и лучшее качество, покупай!", reply_markup=keyboard)
 
 
 async def main():
